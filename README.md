@@ -10,9 +10,9 @@ Blog link: www.backend-b.com
 
 ## 關於本專案 / About
 
-這個 repository 收錄了我所有的技術文章，主要聚焦在後端開發、系統架構以及程式設計等主題。
+這個 repository 收錄了我所有的文章，主要聚焦在後端開發、系統架構以及程式設計等主題，偶爾也會穿插一些生活化的主題 XD
 
-This repository contains all my technical articles, mainly focusing on backend development, system architecture, and software engineering.
+This repository contains all my technical articles, mainly focusing on backend development, system architecture, and software engineering. Maybe some life related topics sometimes.
 
 ## 如何貢獻 / How to Contribute
 
