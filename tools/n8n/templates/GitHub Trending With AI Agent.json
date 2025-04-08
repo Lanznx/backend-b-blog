@@ -1,0 +1,525 @@
+{
+  "name": "GitHub Trending",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "50c11f08-10a6-4eb4-93af-934545bb2dfa",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        -260,
+        0
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "box",
+              "cssSelector": "div.Box",
+              "returnValue": "html"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4ac3af7b-138d-48ea-bfeb-db524c2fb8df",
+      "name": "Extract Box",
+      "type": "n8n-nodes-base.html",
+      "position": [
+        400,
+        100
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "url": "https://github.com/trending",
+        "options": {}
+      },
+      "id": "f2dc2aea-7255-4a35-84f0-536ec7da65b0",
+      "name": "Request to Github Trend",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        180,
+        100
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "repositories",
+        "options": {}
+      },
+      "id": "41d51ae2-c7c1-44c2-88e8-0dc69061110b",
+      "name": "Turn to a list",
+      "type": "n8n-nodes-base.splitOut",
+      "position": [
+        840,
+        100
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a0e76646-60d7-44a6-af77-33f27fb465cb",
+              "name": "author",
+              "type": "string",
+              "value": "={{ $json.repository.split('/')[0].trim() }}"
+            },
+            {
+              "id": "a2bd790a-784e-4d72-9a4e-92be22edea8f",
+              "name": "title",
+              "type": "string",
+              "value": "={{ $json.repository.split('/')[1].trim() }}"
+            },
+            {
+              "id": "22f1518a-7081-4417-ab9d-88f26a7b5cfe",
+              "name": "repository",
+              "type": "string",
+              "value": "={{ $json.repository }}"
+            },
+            {
+              "id": "baff9a9f-020a-4968-bb80-a4a91a94144a",
+              "name": "url",
+              "type": "string",
+              "value": "=https://github.com/{{ $json.repository.replaceAll(' ','') }}"
+            },
+            {
+              "id": "f5c48a02-b55d-4167-a823-53ac1d851ee5",
+              "name": "created_at",
+              "type": "string",
+              "value": "={{$now}}"
+            },
+            {
+              "id": "27a44ce9-4b5b-44b2-94d9-eb5b2ae81dcd",
+              "name": "description",
+              "type": "string",
+              "value": "={{ $json.description }}"
+            }
+          ]
+        },
+        "includeOtherFields": "=",
+        "options": {}
+      },
+      "id": "4e40ea4c-9b5c-41d4-8776-60a9a529b56c",
+      "name": "Set Result Variables",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1500,
+        100
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "dataPropertyName": "repositories",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "repository",
+              "cssSelector": "a.Link"
+            },
+            {
+              "key": "language",
+              "cssSelector": "span.d-inline-block"
+            },
+            {
+              "key": "description",
+              "cssSelector": "p"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "eb29945f-4d7e-4c9c-ab5d-ab0edf2e986d",
+      "name": "Extract repository data",
+      "type": "n8n-nodes-base.html",
+      "position": [
+        1280,
+        100
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "dataPropertyName": "box",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "repositories",
+              "cssSelector": "article.Box-row",
+              "returnValue": "html",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {
+          "trimValues": true,
+          "cleanUpText": true
+        }
+      },
+      "id": "529dfe3d-61cd-4653-832e-362d9a0a9307",
+      "name": "Extract all repositories",
+      "type": "n8n-nodes-base.html",
+      "position": [
+        620,
+        100
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1,
+                2
+              ],
+              "triggerAtHour": 10,
+              "triggerAtMinute": null
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -260,
+        200
+      ],
+      "id": "85b3dd88-297a-4662-9fb8-30d620bd8345",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=你身為一個台灣的技術狂熱者，你只會講繁體中文跟英文。\n你要仔細審查下面的 github 熱門 repo，並且列點回答下面兩件事：\n1. 解釋這些 repo 在做什麼？可以怎麼被應用？\n2. 除此之外，最後總結這系列的 trending repo 有什麼趨勢？\n除了回答問題之外，不可以提到任何其他事情\n並且你需要以短篇技術文章的形式，用 markdown 寫給讀者看。整體文章在 300 字以內，其中八成都應該拿來說明趨勢\n\n\n{{ $json.repository }}\n\n{{ $json.description }}\n",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [
+        1940,
+        100
+      ],
+      "id": "1fef6b17-3b0b-4d5d-b0b3-21acf3e3003a",
+      "name": "AI Agent",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1920,
+        340
+      ],
+      "id": "207821a2-089f-4449-a6ff-af236eeccc05",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "XXX_REDACTED_ID_XXX",
+          "name": "XXX_REDACTED_NAME_XXX"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "maxItems": 10
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        1060,
+        100
+      ],
+      "id": "a63cd666-0350-4679-8994-c1629cd512b7",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "guildId": {
+          "value": "XXX_REDACTED_GUILD_ID_XXX",
+          "cachedResultName": "XXX_REDACTED_GUILD_NAME_XXX"
+        },
+        "channelId": {
+          "value": "XXX_REDACTED_CHANNEL_ID_XXX",
+          "cachedResultName": "XXX_REDACTED_CHANNEL_NAME_XXX"
+        },
+        "content": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        2280,
+        100
+      ],
+      "id": "a7975602-0690-46ae-b891-064b5303f790",
+      "name": "Discord",
+      "webhookId": "XXX_REDACTED_WEBHOOK_ID_XXX",
+      "credentials": {
+        "discordBotApi": {
+          "id": "XXX_REDACTED_ID_XXX",
+          "name": "XXX_REDACTED_NAME_XXX"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "guildId": {
+          "value": "XXX_REDACTED_GUILD_ID_XXX",
+          "cachedResultName": "XXX_REDACTED_GUILD_NAME_XXX"
+        },
+        "channelId": {
+          "value": "XXX_REDACTED_CHANNEL_ID_XXX",
+          "cachedResultName": "XXX_REDACTED_CHANNEL_NAME_XXX"
+        },
+        "content": "=# ------- {{ $today.format('yyyy-MM-dd') }} GitHub 熱門 repo ------",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -40,
+        100
+      ],
+      "id": "217407ad-3d78-4d07-accf-3041edbd27a1",
+      "name": "Discord1",
+      "webhookId": "XXX_REDACTED_WEBHOOK_ID_XXX",
+      "credentials": {
+        "discordBotApi": {
+          "id": "rs5gyVAifUfU3PHO",
+          "name": "Discord Bot account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "description"
+            },
+            {
+              "fieldToAggregate": "repository"
+            }
+          ]
+        },
+        "options": {
+          "mergeLists": true
+        }
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1720,
+        100
+      ],
+      "id": "0626b59b-a902-46e4-a670-92a650004881",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "content": "# 申請 discord bot token\nhttps://ithelp.ithome.com.tw/articles/10350599",
+        "width": 440
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -120,
+        -120
+      ],
+      "id": "9d031c20-ea9f-4f6b-9e7d-48269542d404",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "# Google Gemini Free api key\n\nhttps://aistudio.google.com/apikey",
+        "width": 500
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1760,
+        480
+      ],
+      "id": "702bb72e-9c9f-4869-ac80-40e3bf9af42c",
+      "name": "Sticky Note1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Extract Box": {
+      "main": [
+        [
+          {
+            "node": "Extract all repositories",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Turn to a list": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract repository data": {
+      "main": [
+        [
+          {
+            "node": "Set Result Variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Request to Github Trend": {
+      "main": [
+        [
+          {
+            "node": "Extract Box",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract all repositories": {
+      "main": [
+        [
+          {
+            "node": "Turn to a list",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Discord1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Result Variables": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Discord1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Discord",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Extract repository data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord1": {
+      "main": [
+        [
+          {
+            "node": "Request to Github Trend",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "4435b570-8297-4e62-9e9f-d5e6df1e0ede",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d312ee3b992e66fad4aa36457f3f3950f5bee722a8c601edc179d7d97eb23137"
+  },
+  "id": "bAeOnGon4KGxjzIK",
+  "tags": []
+}
