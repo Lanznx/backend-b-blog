@@ -1,0 +1,11 @@
+services:
+  pgvector-benchmark-db:
+    image: pgvector/pgvector:pg15
+
+    restart: always
+    ports:
+      - '5540:5432'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres

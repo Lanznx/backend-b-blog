@@ -1,0 +1,34 @@
+{
+  "name": "pgvector-benchmark",
+  "version": "1.0.0",
+  "description": "Benchmark for comparing different PostgreSQL Connection Pool strategies with pgvector",
+  "main": "index.js",
+  "scripts": {
+    "benchmark:a": "tsx benchmarks/benchmark-a.ts",
+    "benchmark:b": "tsx benchmarks/benchmark-b.ts",
+    "benchmark:all": "tsx benchmarks/benchmark-all.ts"
+  },
+  "keywords": [
+    "benchmark",
+    "pgvector",
+    "postgres",
+    "connection-pool"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@langchain/community": "^0.3.34",
+    "@langchain/core": "^0.3.42",
+    "dotenv": "^16.3.1",
+    "pg": "^8.11.3",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5",
+    "@types/pg": "^8.10.9",
+    "@types/uuid": "^9.0.7",
+    "tsx": "^4.6.2",
+    "typescript": "^5.3.3"
+  },
+  "packageManager": "pnpm@9.15.1+sha512.1acb565e6193efbebda772702950469150cf12bcc764262e7587e71d19dc98a423dff9536e57ea44c49bdf790ff694e83c27be5faa23d67e0c033b583be4bfcf"
+}
