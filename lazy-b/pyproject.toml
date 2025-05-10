@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "lazy-b"
-version = "0.1.4"
+version = "0.1.5"
 description = "Keep Slack/Teams active by simulating key presses at regular intervals"
 readme = "README.md"
 requires-python = ">=3.8"
@@ -12,6 +12,7 @@ license = {text = "MIT"}
 authors = [
     {name = "Brandon Lu", email = "brandonlu0924@gmail.com"},
 ]
+keywords = ["slack", "teams", "inactive", "away", "simulate", "keypress", "automation", "utility"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: End Users/Desktop",
@@ -50,6 +51,8 @@ macos = [
 [project.urls]
 "Homepage" = "https://github.com/Lanznx/backend-b-blog/tree/main/lazy-b"
 "Bug Tracker" = "https://github.com/Lanznx/backend-b-blog/issues"
+"Documentation" = "https://github.com/Lanznx/backend-b-blog/tree/main/lazy-b#readme"
+"Source Code" = "https://github.com/Lanznx/backend-b-blog/tree/main/lazy-b"
 
 [project.scripts]
 lazy-b = "lazy_b.cli:main"

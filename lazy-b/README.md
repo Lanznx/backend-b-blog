@@ -65,7 +65,7 @@ from lazy_b import LazyB
 import time
 
 # Create an instance with a custom interval (in seconds)
-lazy = LazyB(interval=45)
+lazy = LazyB(interval=5)  # Press Shift every 5 seconds
 
 # Define a callback function to handle status messages (optional)
 def status_callback(message):
@@ -86,7 +86,7 @@ except KeyboardInterrupt:
 ## Features
 
 - Prevents "away" or "inactive" status in messaging applications
-- Customizable interval between key presses
+- Customizable interval between key presses (default: 1 second)
 - Simple command-line interface
 - Cross-platform: Works on macOS, Windows, and Linux
 - Background mode on macOS (no dock icon)
