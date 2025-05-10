@@ -22,12 +22,10 @@ class LazyB:
         self._thread: Optional[threading.Thread] = None
         self._callback: Optional[Callable[[str], None]] = None
 
-        # Disable the fail-safe feature (prevents script failure when mouse is in top-left corner)
         pyautogui.FAILSAFE = False
 
     def _press_shift(self) -> None:
         """Simulate pressing the shift key."""
-        # Using press() instead of keyDown/keyUp for simplicity
         pyautogui.press("shift")
 
         if self._callback:

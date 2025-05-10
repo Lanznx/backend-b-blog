@@ -2,7 +2,7 @@ import argparse
 import signal
 import sys
 import time
-import os
+import platform
 from typing import NoReturn, List, Optional
 
 from .main import LazyB
@@ -26,20 +26,23 @@ def parse_args(args: Optional[List[str]] = None) -> argparse.Namespace:
         "-q", "--quiet", action="store_true", help="Run in quiet mode (no output)"
     )
 
-    parser.add_argument(
-        "-f",
-        "--foreground",
-        action="store_true",
-        help="Run in foreground mode (by default, runs in background with no dock icon)",
-    )
+    if platform.system() == "Darwin":
+        parser.add_argument(
+            "-f",
+            "--foreground",
+            action="store_true",
+            help="Run in foreground mode (by default, runs in background with no dock icon)",
+        )
 
     return parser.parse_args(args)
 
 
 def hide_dock_icon():
     """Hide the dock icon on macOS."""
+    if platform.system() != "Darwin":
+        return
+
     try:
-        # Import AppKit for macOS
         from AppKit import NSApplication
 
         app = NSApplication.sharedApplication()
@@ -47,7 +50,6 @@ def hide_dock_icon():
         # This prevents the app from showing in the dock
         app.setActivationPolicy_(1)
     except ImportError:
-        # Not on macOS or AppKit not available
         pass
 
 
@@ -55,8 +57,10 @@ def main(args: Optional[List[str]] = None) -> NoReturn:
     """Main entry point for the CLI."""
     parsed_args = parse_args(args)
 
-    # Unless explicitly requested, hide the dock icon
-    if not parsed_args.foreground:
+    os_name = platform.system()
+    is_macos = os_name == "Darwin"
+
+    if is_macos and hasattr(parsed_args, "foreground") and not parsed_args.foreground:
         hide_dock_icon()
 
     lazy_b = LazyB(interval=parsed_args.interval)
@@ -81,11 +85,14 @@ def main(args: Optional[List[str]] = None) -> NoReturn:
     print_status(f"LazyB is keeping you active (press Ctrl+C to stop)")
     print_status(f"Pressing Shift key every {parsed_args.interval} seconds")
 
-    if not parsed_args.foreground:
+    if is_macos and hasattr(parsed_args, "foreground") and not parsed_args.foreground:
         print("Running in background mode. You can close this terminal window.")
+    else:
+        print(
+            f"Running on {os_name}. Keep this window open for the program to continue running."
+        )
 
     try:
-        # Keep the main thread alive
         while True:
             time.sleep(1)
     except KeyboardInterrupt:

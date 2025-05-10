@@ -27,7 +27,6 @@ Run `lazy-b` from the command line:
 
 ```bash
 # Basic usage (will press Shift key every 1 second)
-# Runs in background mode by default (no dock icon)
 lazy-b
 
 # Customize the interval (e.g., every 30 seconds)
@@ -36,13 +35,18 @@ lazy-b --interval 30
 # Run in quiet mode (no console output)
 lazy-b --quiet
 
-# Run in foreground mode (shows dock icon)
+# Run in foreground mode (shows dock icon - macOS only)
 lazy-b --foreground
 ```
 
-By default, lazy-b runs in background mode with no dock icon (on macOS). You can close the terminal window after starting it, and it will continue to run.
+#### Platform-specific behavior
 
-To stop lazy-b, you can press Ctrl+C in the terminal window if it's still open, or find and kill the process:
+- **macOS**: By default, runs in background mode with no dock icon. You can close the terminal window after starting it, and it will continue to run.
+- **Windows/Linux**: The application runs in the terminal window. You need to keep the window open for the program to continue running.
+
+To stop lazy-b, you can:
+- Press Ctrl+C in the terminal window
+- On macOS, if running in background, find and kill the process:
 
 ```bash
 # Find the process
@@ -54,7 +58,7 @@ kill <PID>
 
 ### Python API
 
-You can also use the Python API directly in your own scripts:
+You can also use the Python API directly in your own scripts (works on all platforms):
 
 ```python
 from lazy_b import LazyB
@@ -84,7 +88,8 @@ except KeyboardInterrupt:
 - Prevents "away" or "inactive" status in messaging applications
 - Customizable interval between key presses
 - Simple command-line interface
-- Runs in background with no dock icon by default
+- Cross-platform: Works on macOS, Windows, and Linux
+- Background mode on macOS (no dock icon)
 - Python API for integration into your own scripts
 - Minimal resource usage
 
