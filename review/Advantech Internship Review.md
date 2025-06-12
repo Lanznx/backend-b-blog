@@ -30,7 +30,7 @@ Tech Stack in this internship
 
 - 後端微服務開發
 
-   - 首先需要開發後端 micro service 來支援插件的資料格式，這邊算是偏簡單的地方，大概就是起個 FasrAPI 服務、串接資料就沒問題了
+   - 首先需要開發後端 micro service 來支援插件的資料格式，這邊算是偏簡單的地方，大概就是起個 FastAPI 服務、串接資料就沒問題了
 
 - 前端 Dashboard 插件開發
 
